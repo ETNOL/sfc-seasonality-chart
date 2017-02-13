@@ -53,11 +53,24 @@ var regionMap = [
         name: 'Arctic',
         fillKey: 'Arctic',
         radius: 55,
-        latitude: 80.07,
-        longitude: 88.43
+        latitude: 58.07,
+        longitude: 193.43
+    },
+    {
+        name: 'Asia-Pacific',
+        fillKey: 'Asia-Pacific',
+        radius: 55,
+        latitude: 38.07,
+        longitude: 153.43
     }
 
 ];
+
+var regionFills = {
+    'Arctic': '#7f7f7f',
+    'Asia-Pacific': '#4f4f4f',
+    defaultFill: '#EDDC4E'
+}
 
 function init () {
     populateMonths(months);
@@ -97,12 +110,10 @@ var map = new Datamap({
     },
     data: {},
     scope: 'world',
-     fills: {
-        'Arctic': '#7f7f7f',
-        defaultFill: '#EDDC4E'
-    },
-    data: {
+     fills: regionFills,
+     data: {
         'Arctic': {fillKey: 'Arctic'},
+        'Asia-Pacific': {fillKey: 'Asia-Pacific'}
     },
     geographyConfig: {
         highlightOnHover: false
@@ -172,21 +183,13 @@ $(document).on('click', '.species button', function (e) {
     mapSeasons(inSeason, 'in-season');
     mapSeasons(partialSeason, 'partial-season');
 
-    // map.bubbles([]);
-    // regions = [];
+    map.bubbles([]);
+    regions = [];
 
-    // inSeason.map(function (fish) {
-    //    regions = regionMap.filter(function (region) { return region.name == fish.region});
-    //     $('.' + fish.species.replace(' ', '')).addClass('in-season');
-    // });
+    regions = regionMap.filter(function (region) { return region.name == fish.region});
+    $('.' + fish.species.replace(' ', '')).addClass('in-season');
 
-    // partialSeason.map(function (fish) {
-    //     partialRegions = regionMap.filter(function (region) { return region.name == fish.region});
-    //     regions = regions.concat(partialRegions);
-    //     $('.' + fish.species.replace(' ', '')).addClass('partial-season');
-    // });
-
-    // map.bubbles(regions, function() {});
+    map.bubbles(regions, function() {});
 })
 
 
