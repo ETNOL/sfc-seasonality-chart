@@ -1,3 +1,19 @@
+var exampleData;
+var publicSpreadsheetUrl = '19CZ5G2wgg3xN7RXMRYB8yT1gabzqoNrLwO6Mi3JeSGI';
+
+function dataInit() {
+    Tabletop.init( { 
+        key: publicSpreadsheetUrl,
+        callback: showInfo,
+        simpleSheet: true
+    })
+}
+
+function showInfo(data, tabletop) {
+    exampleData = data;
+    init(data);
+}
+
 var months = [
     'January',
     'Feburary',
@@ -12,41 +28,6 @@ var months = [
     'November',
     'December'
 ];
-
-var exampleData = [
-    {
-        species: 'Tuna',
-        region: 'Asia-Pacific',
-        january: 0,
-        feburary: 0,
-        march: 1,
-        april: 1,
-        may: 1,
-        june: 2,
-        july: 2,
-        august: 1,
-        september: 1,
-        october: 0,
-        november: 0,
-        december: 0 
-    },
-    {
-        species: 'Arctic Char',
-        region: 'Arctic',
-        january: 1,
-        feburary: 2,
-        march: 2,
-        april: 1,
-        may: 0,
-        june: 0,
-        july: 0,
-        august: 0,
-        september: 1,
-        october: 1,
-        november: 2,
-        december: 2 
-    }
-]
 
 var regionMap = [
     {
@@ -81,8 +62,8 @@ function populateSpecies (dataSet) {
     dataSet.forEach(function (fish) {
         $('.species').append(
            $('<button>')
-            .text(fish.species)
-            .addClass(fish.species.replace(' ', ''))
+            .text(fish.Product)
+            .addClass(fish.Product.replace(' ', ''))
         );
     });
 }
@@ -92,7 +73,7 @@ function populateMonths (dataSet) {
         $('.months').append(
            $('<button>')
             .text(month)
-            .addClass(month.toLowerCase())
+            .addClass(month)
         );
     });
 }
@@ -122,13 +103,13 @@ var map = new Datamap({
 
 var regions;
 $(document).on('click', '.months button', function (e) {
-    var month = $(e.currentTarget).text().toLowerCase();
+    var month = $(e.currentTarget).text();
     var inSeason = exampleData.filter(function (fish) {
-        return fish[month] == 2;
+        return fish[month] == 'G';
     });
 
     var partialSeason = exampleData.filter(function (fish) {
-        return fish[month] == 1;
+        return fish[month] == 'Y';
     });
     
     clearSeasonIndications();
@@ -137,14 +118,14 @@ $(document).on('click', '.months button', function (e) {
     regions = [];
 
     inSeason.map(function (fish) {
-       regions = regionMap.filter(function (region) { return region.name == fish.region});
-        $('.' + fish.species.replace(' ', '')).addClass('in-season');
+       regions = regionMap.filter(function (region) { return region.name == fish.Region});
+        $('.' + fish.Product.replace(' ', '')).addClass('in-season');
     });
 
     partialSeason.map(function (fish) {
-        partialRegions = regionMap.filter(function (region) { return region.name == fish.region});
+        partialRegions = regionMap.filter(function (region) { return region.name == fish.Region});
         regions = regions.concat(partialRegions);
-        $('.' + fish.species.replace(' ', '')).addClass('partial-season');
+        $('.' + fish.Product.replace(' ', '')).addClass('partial-season');
     });
 
     map.bubbles(regions, function() {});
@@ -172,11 +153,11 @@ function mapSeasons(targets, klass) {
 $(document).on('click', '.species button', function (e) {
     var species = $(e.target).text();
     var fish = exampleData.filter(function (fish) {
-        return fish.species == species;
+        return fish.Product == species;
     })[0];
 
-    var inSeason = getMonthsByRating(fish, 2); 
-    var partialSeason = getMonthsByRating(fish, 1); 
+    var inSeason = getMonthsByRating(fish, 'G'); 
+    var partialSeason = getMonthsByRating(fish, 'Y'); 
 
     clearSeasonIndications();    
 
@@ -186,11 +167,11 @@ $(document).on('click', '.species button', function (e) {
     map.bubbles([]);
     regions = [];
 
-    regions = regionMap.filter(function (region) { return region.name == fish.region});
-    $('.' + fish.species.replace(' ', '')).addClass('in-season');
+    regions = regionMap.filter(function (region) { return region.name == fish.Region});
+    $('.' + fish.Product.replace(' ', '')).addClass('in-season');
 
     map.bubbles(regions, function() {});
 })
 
 
-init();
+dataInit();
